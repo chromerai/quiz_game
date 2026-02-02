@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import QuizEntity from "./components/quizEntity"
 import './App.css'
+import clsx from 'clsx'
 
 function App() {
   const [questionsData, setQuestionsData] = useState([])
@@ -8,9 +9,17 @@ function App() {
   const [showResults, setShowResults] = useState(false)
 
   async function handleStartButton() {
-    const res = await fetch('https://opentdb.com/api.php?amount=5&difficulty=medium&type=multiple')
-    const data = await res.json();
-    setQuestionsData(data.results)
+    try {
+      const res = await fetch('https://opentdb.com/api.php?amount=5&difficulty=medium&type=multiple')
+      const data = await res.json();
+      setQuestionsData(data.results)
+    }
+    catch (err) {
+      return (
+        <h1>There was some error loading the questions! Kindly refresh the page</h1>
+      )
+    }
+    
   }
 
   function handleAnswerSelect(index, answerData) {
@@ -49,19 +58,19 @@ function App() {
           <button className="start-btn" onClick={handleStartButton}>Start quiz</button>
       </div>}
       {
-        (questionsData.length > 0) && <main>
+        (questionsData.length > 0) && <main className='active'>
           <section className='question-section'>
             {quizItems}
           </section>
           {!showResults ?
-            <button className='check-btn'
+            <button className={clsx("check-btn", !allAnswers&&"not-usable")}
             onClick={() => setShowResults(true)}
             disabled={!allAnswers}
             >
               Check answers
             </button> 
             : <div className='result'>
-                <span>Your score is {numCorrectAnswers}/{questionsData.length}</span>
+                <p>Your scored {numCorrectAnswers}/{questionsData.length} correct answers</p>
                 <button onClick={resetGame}>Play Again</button>
               </div>}
         </main>

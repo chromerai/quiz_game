@@ -31,10 +31,11 @@ export default function QuizEntity(prop) {
         const isSelected = selectedIndex === index
         const isCorrect = option.isCorrect
 
-        const optionClassName= clsx("option-container__item", {
+        const optionClassName= clsx("options-container__item", {
             "selected": isSelected && !showResults,
             "correct": showResults && isCorrect,
-            "wrong": showResults && isSelected && !isCorrect
+            "wrong": showResults && isSelected && !isCorrect,
+            "faded": showResults && !isCorrect 
     })
         return (
             <li 
